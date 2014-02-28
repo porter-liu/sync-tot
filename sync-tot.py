@@ -110,11 +110,23 @@ print( 'package URL = ' + url )
 package_filename = os.path.basename( url )
 print( 'package filename = ' + package_filename )
 
-remotefile = urllib2.urlopen( url )
-localFile = open( package_filename, 'wb' )
-localFile.write( remotefile.read() )
-localFile.close()
-remotefile.close()
+data = None
+
+try:
+	remotefile = urllib2.urlopen( url )
+	data = remotefile.read()
+	remotefile.close()
+except Exception, e:
+	print( 'failed to access package URL, ' + str( e ) )
+	sys.exit( 1 )
+
+try:
+	localFile = open( package_filename, 'wb' )
+	localFile.write( data )
+	localFile.close()
+except Exception, e:
+	print( 'failed to create local file, ' + str( e ) )
+	sys.exit( 1 )
 
 #
 # upload package file onto TOT
